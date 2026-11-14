@@ -12,5 +12,6 @@ export class Navbar {
     { path: '/', full: 'Single Page Application', short: 'SPA' },
     { path: '/lazy-loading', full: 'Lazy Loading', short: 'Lazy' },
     { path: '/signals', full: 'Signals', short: 'Signals' },
+    { path: '/validators', full: 'Validators', short: 'Forms' },
   ];
 }

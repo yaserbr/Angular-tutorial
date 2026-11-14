@@ -6,10 +6,7 @@ import { Component, computed, signal } from '@angular/core';
   styleUrl: './signals.css',
 })
 export class Signals {
-  // ── Section 2 · Vanilla JS vs Signals ──
-  /** Visual simulation of the vanilla counter (no real DOM manipulation). */
-  protected readonly vanillaCount = signal(0);
-  /** Real Angular signal. */
+  // ── Section 2 · Angular Signals counter ──
   protected readonly angularCount = signal(0);
 
   // ── Section 3 · How Signals work ──
@@ -43,11 +40,6 @@ export class Signals {
     }
   }
 
-  protected incrementVanilla(): void {
-    this.mark('vanilla');
-    this.vanillaCount.update((value) => value + 1);
-  }
-
   protected incrementAngular(): void {
     this.mark('angular');
     this.angularCount.update((value) => value + 1);
@@ -75,13 +67,6 @@ export class Signals {
   }
 
   // Code examples (stored as strings so braces and {{ }} display as text)
-  protected readonly vanillaCode = `let count = 0;
-
-function increment() {
-  count++;
-  document.getElementById('count').textContent = count;
-}`;
-
   protected readonly signalCode = `count = signal(0);
 
 increment() {

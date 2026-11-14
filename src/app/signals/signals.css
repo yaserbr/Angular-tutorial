@@ -65,9 +65,14 @@ h3 {
   animation: rise 0.9s calc(var(--d, 0) * 0.1s) cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-.head {
+/* .solo centers the single counter card */
+.head,
+.solo {
   max-width: 640px;
   margin: 0 auto 40px;
+}
+
+.head {
   text-align: center;
 }
 
@@ -79,8 +84,7 @@ h3 {
   background: rgba(255, 255, 255, 0.04);
 }
 
-.split,
-.two {
+.split {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -166,7 +170,7 @@ button {
   color: var(--cyan);
 }
 
-/* 2 · Counters */
+/* 2 · Counter */
 .counter {
   display: flex;
   align-items: center;
@@ -305,7 +309,6 @@ button {
 
 @media (max-width: 760px) {
   .split,
-  .two,
   .three,
   .steps {
     grid-template-columns: 1fr;

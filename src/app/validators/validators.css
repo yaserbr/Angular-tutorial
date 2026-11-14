@@ -1,0 +1,337 @@
+:host {
+  --purple: #8b5cf6;
+  --cyan: #22d3ee;
+  --red: #dd0031;
+  --bad: #f87171;
+  display: block;
+}
+
+section {
+  width: min(1100px, 100% - 32px);
+  margin: auto;
+  padding-block: clamp(48px, 8vw, 88px);
+}
+
+h1 {
+  margin: 16px 0 12px;
+  font-size: clamp(2.4rem, 5.6vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  margin: 12px 0 8px;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+h3 {
+  margin: 0 0 14px;
+}
+
+.muted,
+.lead {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+}
+
+.lead {
+  color: var(--text);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.grad {
+  background: var(--grad);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.kicker {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid;
+  border-radius: 99px;
+  font: 600 0.72rem var(--mono);
+  color: #ff9bd6;
+}
+
+/* Same entrance animation as the SPA page (singleton.css) */
+.rise {
+  animation: rise 0.9s calc(var(--d, 0) * 0.1s) cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.head {
+  max-width: 640px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.card {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--purple);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.split,
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 32px;
+}
+
+.layout {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.ok {
+  color: var(--green);
+}
+
+.bad {
+  color: var(--bad);
+}
+
+/* 1 · Illustration: each step glows in turn */
+.intro-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+}
+
+.intro-flow span,
+.node {
+  position: relative;
+  padding: 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: #0d1126;
+  font-weight: 700;
+  text-align: center;
+}
+
+.intro-flow span {
+  animation: glow 3s infinite;
+}
+
+.intro-flow span:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.intro-flow span:nth-child(3) {
+  animation-delay: 2s;
+}
+
+.intro-flow span + span::before,
+.node + .node::before {
+  content: '→';
+  position: absolute;
+  left: -24px;
+  color: var(--cyan);
+}
+
+/* 2 · Form */
+form {
+  display: grid;
+  gap: 18px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.input {
+  position: relative;
+}
+
+input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: #0a0e1f;
+  color: var(--text);
+  font: 1rem var(--font);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Angular adds these classes automatically */
+input.ng-invalid:is(.ng-touched, .ng-dirty) {
+  border-color: var(--bad);
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15);
+}
+
+input.ng-valid:is(.ng-touched, .ng-dirty) {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.15);
+}
+
+.check {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  color: var(--green);
+}
+
+.check,
+.msg,
+.success,
+.badge {
+  animation: pop 0.35s ease-out;
+}
+
+.msg {
+  color: var(--bad);
+}
+
+button {
+  padding: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  color: #fff;
+  font: 700 1rem var(--font);
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.success {
+  margin: 0;
+  color: var(--green);
+  font-weight: 600;
+}
+
+/* 3 · Status panel */
+.status {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.status li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.badge {
+  padding: 2px 12px;
+  border-radius: 99px;
+  font: 600 0.78rem var(--mono);
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.Valid {
+  color: var(--green);
+  border-color: var(--green);
+  background: rgba(52, 211, 153, 0.12);
+}
+
+.Invalid {
+  color: var(--bad);
+  border-color: var(--bad);
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.overall {
+  margin: 0;
+  font: 700 1rem var(--mono);
+}
+
+/* 4 · Flow diagram (re-created on each keystroke so it replays) */
+.flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.node small {
+  display: block;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.node strong {
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+}
+
+.run .node {
+  animation: glow 0.8s ease-out both;
+}
+
+.run .node:nth-child(2) { animation-delay: 0.2s; }
+.run .node:nth-child(3) { animation-delay: 0.4s; }
+.run .node:nth-child(4) { animation-delay: 0.6s; }
+
+.note {
+  margin: 16px 0 0;
+  text-align: center;
+}
+
+/* 5 · Code */
+.code {
+  align-items: start;
+}
+
+pre {
+  margin: 0;
+  padding: 18px;
+  overflow-x: auto;
+  border-left: 3px solid var(--red);
+  border-radius: 12px;
+  background: #0a0e1f;
+  font: 0.82rem/1.6 var(--mono);
+  color: #c4b5fd;
+}
+
+/* 6 · Takeaway */
+.takeaway {
+  display: grid;
+  gap: 10px;
+  max-width: 640px;
+  margin: auto;
+  padding-left: 44px;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .split,
+  .layout,
+  .flow {
+    grid-template-columns: 1fr;
+  }
+
+  .intro-flow {
+    flex-wrap: wrap;
+  }
+
+  .node + .node::before {
+    display: none;
+  }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+}
+
+@keyframes glow {
+  15% { border-color: var(--cyan); box-shadow: 0 0 24px -6px var(--cyan); }
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.85); }
+}

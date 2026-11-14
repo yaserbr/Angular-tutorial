@@ -1,1 +1,118 @@
-<p>validators works!</p>
+<!-- 1 · Introduction -->
+<section class="split">
+  <div>
+    <span class="kicker rise">Core concept · Forms</span>
+    <h1 class="rise" style="--d: 1">Angular Built-in <span class="grad">Validators</span></h1>
+    <p class="lead rise" style="--d: 2">Validate user input with less code.</p>
+    <p class="muted rise" style="--d: 3">
+      Angular provides built-in validators to check form inputs and automatically track their validation status.
+    </p>
+  </div>
+  <div class="intro-flow rise" style="--d: 2" aria-label="User Input, then Angular Validators, then Valid or Invalid">
+    <span>User Input</span><span>Angular Validators</span>
+    <span><b class="ok">Valid</b> / <b class="bad">Invalid</b></span>
+  </div>
+</section>
+
+<!-- 2 + 3 · Form and live status -->
+<section>
+  <header class="head">
+    <span class="kicker">01 · Try it</span>
+    <h2>Registration form</h2>
+    <p class="muted">Type in the fields. Angular validates as you go.</p>
+  </header>
+
+  <div class="layout">
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+      @for (f of fields; track f.name) {
+        <label>
+          {{ f.label }}
+          <span class="input">
+            <input [type]="f.type" [formControlName]="f.name" (input)="onInput(f.name)" />
+            @if (state(f.name) === 'Valid') {
+              <b class="check" aria-label="Valid">✓</b>
+            }
+          </span>
+          @if (state(f.name) === 'Invalid') {
+            <small class="msg">{{ error(f.name) }}</small>
+          }
+        </label>
+      }
+      <button type="submit" [disabled]="form.invalid">Submit</button>
+      @if (submitted()) {
+        <p class="success">🎉 Registered! All fields are valid.</p>
+      }
+    </form>
+
+    <aside class="card">
+      <h3>Live validation status</h3>
+      <ul class="status">
+        @for (f of fields; track f.name) {
+          <li>
+            {{ f.label }}
+            @for (s of [state(f.name)]; track s) {
+              <span class="badge" [class]="'badge ' + s">{{ s }}</span>
+            }
+          </li>
+        }
+      </ul>
+      <p class="overall" [class.ok]="form.valid" [class.bad]="form.invalid">
+        Form Status: {{ form.valid ? 'VALID' : 'INVALID' }}
+      </p>
+    </aside>
+  </div>
+</section>
+
+<!-- 4 · How validators work -->
+<section>
+  <header class="head">
+    <span class="kicker">02 · How it works</span>
+    <h2>How Validators work</h2>
+    <p class="muted">Type in the form above and watch the flow.</p>
+  </header>
+
+  <div class="card">
+    @if (lastField(); as name) {
+      @for (n of [edits()]; track n) {
+        <div class="flow run">
+          <div class="node"><small>Input Value</small><strong>{{ field(name).label }}: "{{ shownValue(name) }}"</strong></div>
+          <div class="node"><small>Validator</small><strong>{{ field(name).rules }}</strong></div>
+          <div class="node" [class]="'node ' + state(name)"><small>Validation Result</small><strong>{{ form.controls[name].valid ? 'VALID' : 'INVALID' }}</strong></div>
+          <div class="node" [class]="'node ' + state(name)">
+            <small>UI Feedback</small>
+            <strong>{{ form.controls[name].valid ? 'Green border ✓' : 'Red border + message' }}</strong>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="flow">
+        <div class="node"><small>Input Value</small><strong>…</strong></div>
+        <div class="node"><small>Validator</small><strong>…</strong></div>
+        <div class="node"><small>Validation Result</small><strong>…</strong></div>
+        <div class="node"><small>UI Feedback</small><strong>…</strong></div>
+      </div>
+    }
+    <p class="muted note">Conceptual visualization, not Angular's exact internal implementation.</p>
+  </div>
+</section>
+
+<!-- 5 · Code -->
+<section>
+  <header class="head">
+    <span class="kicker">03 · Code</span>
+    <h2>Reactive Forms in code</h2>
+  </header>
+  <div class="split code">
+    <pre>{{ tsCode }}</pre>
+    <pre>{{ htmlCode }}</pre>
+  </div>
+</section>
+
+<!-- 6 · Key takeaway -->
+<section>
+  <ul class="card takeaway">
+    <li>Angular provides ready-to-use validators.</li>
+    <li>Form validity updates automatically.</li>
+    <li>Reactive Forms make validation easier to manage.</li>
+  </ul>
+</section>

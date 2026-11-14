@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Signals } from './signals/signals';
 import { Singleton } from './singleton/singleton';
+import { Validators } from './validators/validators';
 
 export const routes: Routes = [
   { path: '', component: Singleton },
@@ -10,5 +11,6 @@ export const routes: Routes = [
     loadComponent: () => import('./lazy-loading/lazy-loading').then((m) => m.LazyLoading),
   },
   { path: 'signals', component: Signals },
+  { path: 'validators', component: Validators },
   { path: '**', redirectTo: '' },
 ];

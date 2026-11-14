@@ -12,50 +12,31 @@
   </div>
 </section>
 
-<!-- 2 · Vanilla JS vs Signals -->
+<!-- 2 · Angular Signals counter -->
 <section>
   <header class="head">
-    <span class="kicker">01 · Compare</span>
-    <h2>Vanilla JS vs Signals</h2>
-    <p class="muted">Same counter. Who updates the screen?</p>
+    <span class="kicker">01 · Counter</span>
+    <h2>Angular Signals</h2>
+    <p class="muted">Change the value. Angular updates the screen.</p>
   </header>
 
-  <div class="two">
-    <article class="card" style="--tone: var(--red)">
-      <h3>Vanilla JavaScript <small class="tag">Simulation</small></h3>
-      <div class="counter">
-        @for (v of [vanillaCount()]; track v) {
-          <strong [class.hit]="isTouched('vanilla')">{{ v }}</strong>
-        }
-        <button type="button" (click)="incrementVanilla()">Increment</button>
-      </div>
-      @if (isTouched('vanilla')) {
-        @for (v of [vanillaCount()]; track v) {
-          <p class="log">count++ → <b>you</b> write textContent = {{ v }}</p>
-        }
+  <article class="card solo" style="--tone: var(--cyan)">
+    <h3>Angular Signals <small class="tag">Real signal()</small></h3>
+    <div class="counter">
+      @for (v of [angularCount()]; track v) {
+        <strong [class.hit]="isTouched('angular')">{{ v }}</strong>
       }
-      <pre>{{ vanillaCode }}</pre>
-      <p class="muted">You manually update the DOM when the value changes.</p>
-    </article>
-
-    <article class="card" style="--tone: var(--cyan)">
-      <h3>Angular Signals <small class="tag">Real signal()</small></h3>
-      <div class="counter">
-        @for (v of [angularCount()]; track v) {
-          <strong [class.hit]="isTouched('angular')">{{ v }}</strong>
-        }
-        <button type="button" (click)="incrementAngular()">Increment</button>
-      </div>
-      @if (isTouched('angular')) {
-        @for (v of [angularCount()]; track v) {
-          <p class="log">count.update() → <b>Angular</b> updates the binding to {{ v }}</p>
-        }
+      <button type="button" (click)="incrementAngular()">Increment</button>
+    </div>
+    @if (isTouched('angular')) {
+      @for (v of [angularCount()]; track v) {
+        <p class="log">count.update() → <b>Angular</b> updates the binding to {{ v }}</p>
       }
-      <pre>{{ signalCode }}</pre>
-      <pre>{{ templateCode }}</pre>
-      <p class="muted">Angular tracks the Signal and updates the displayed value.</p>
-    </article>
-  </div>
+    }
+    <pre>{{ signalCode }}</pre>
+    <pre>{{ templateCode }}</pre>
+    <p class="muted">Angular tracks the Signal and updates the displayed value.</p>
+  </article>
 </section>
 
 <!-- 3 · How Signals work -->
