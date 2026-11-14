@@ -1,0 +1,214 @@
+<!-- A · Hero -->
+<section class="hero split" id="spa" aria-labelledby="hero-title">
+  <div>
+    <p class="kicker rise">Core concept · Routing</p>
+    <h1 id="hero-title" class="rise" style="--d: 1">Single Page <span class="grad">Application</span></h1>
+    <p class="lead rise" style="--d: 2">One page. Multiple views. No full reload.</p>
+    <p class="muted rise" style="--d: 3">
+      A Single Page Application updates parts of the screen without reloading the entire webpage.
+    </p>
+    <div class="rise" style="--d: 4">
+      <a class="btn primary" href="#demo">Try the live demo →</a>
+      <a class="btn" href="#how">How it works</a>
+    </div>
+  </div>
+
+  <div class="rise" style="--d: 2" aria-hidden="true">
+    <div class="browser float">
+      <div class="bar">
+        <span class="url">my-app.com<span class="cyc"><b>/home</b><b>/about</b><b>/contact</b></span></span>
+      </div>
+      <div class="zone"><i></i><i></i><i></i></div>
+      <div class="zone main dyn cyc"><b>Home</b><b>About</b><b>Contact</b></div>
+      <div class="zone"><i></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- B · How it works -->
+<section id="how" aria-labelledby="how-title">
+  <header class="head">
+    <span class="kicker">01 · How it works</span>
+    <h2 id="how-title">How does an SPA work?</h2>
+    <p class="muted">Only the content you need changes. The rest stays in place.</p>
+  </header>
+
+  <div class="split">
+    <div class="browser" role="img"
+      aria-label="Browser diagram: the navbar and footer stay in place, only the main content changes.">
+      <div class="bar"><span class="url">my-app.com<span class="cyc"><b>/home</b><b>/about</b><b>/contact</b></span></span></div>
+      <div class="zone"><span>Navbar</span><em>Persistent</em></div>
+      <div class="zone main dyn">
+        <span>Main Content <em>Dynamic</em></span>
+        <div class="cyc"><b>Home</b><b>About</b><b>Contact</b></div>
+      </div>
+      <div class="zone"><span>Footer</span><em>Persistent</em></div>
+    </div>
+
+    <ul class="legend">
+      <li class="glass" style="--c: var(--blue)">
+        <span class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg></span>
+        <div><strong>Persistent</strong><p class="muted">Loaded once. Stays on screen.</p></div>
+      </li>
+      <li class="glass" style="--c: var(--magenta)">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" /></svg></span>
+        <div><strong>Dynamic</strong><p class="muted">Replaced on every navigation.</p></div>
+      </li>
+      <li class="glass" style="--c: #a259ff">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm7 0v5h5" /></svg></span>
+        <div><strong>One HTML page</strong><p class="muted">Downloaded only once.</p></div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- C · Interactive demo -->
+<section id="demo" aria-labelledby="demo-title">
+  <header class="head">
+    <span class="kicker">02 · Live demo</span>
+    <h2 id="demo-title">Try it yourself</h2>
+    <p class="muted">Click a link. Watch what changes, and what stays.</p>
+  </header>
+
+  <div class="demo">
+    <div class="browser" [style.--accent]="activeView().accent">
+      <div class="bar">
+        <span class="url" aria-live="polite">my-app.com
+          @for (path of [activeView().path]; track path) {
+            <b class="path" animate.enter="url-enter">{{ path }}</b>
+          }
+        </span>
+      </div>
+
+      <nav aria-label="Simulated app navigation">
+        <strong class="brand">MyApp</strong>
+        @for (view of views; track view.id) {
+          <button type="button" [class.on]="view.id === activeId()" [style.--c]="view.accent"
+            [attr.aria-current]="view.id === activeId() ? 'page' : null" (click)="navigate(view.id)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="view.icon" /></svg>
+            {{ view.label }}
+          </button>
+        }
+        <span class="pill" title="Rendered once, never updated">Persistent · {{ shellLoadedAt }}</span>
+      </nav>
+
+      <div class="stage">
+        @for (count of [swapCount()]; track count) {
+          @if (count > 0) {
+            <span class="flash" aria-hidden="true"></span>
+          }
+        }
+        <span class="pill hot" title="Updated on every navigation">Dynamic · {{ renderedAt() }}</span>
+
+        @switch (activeId()) {
+          @case ('home') {
+            <article class="view" [style.--accent]="views[0].accent" animate.enter="view-enter" animate.leave="view-leave">
+              <header>
+                <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="views[0].icon" /></svg></span>
+                <div><h3>{{ views[0].title }}</h3><p class="muted">{{ views[0].text }}</p></div>
+              </header>
+              <div class="cards">
+                <div class="glass"><strong>Fast</strong><small>No waiting</small></div>
+                <div class="glass"><strong>Smooth</strong><small>No flashing</small></div>
+                <div class="glass"><strong>Modern</strong><small>App-like feel</small></div>
+              </div>
+            </article>
+          }
+          @case ('about') {
+            <article class="view" [style.--accent]="views[1].accent" animate.enter="view-enter" animate.leave="view-leave">
+              <header>
+                <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="views[1].icon" /></svg></span>
+                <div><h3>{{ views[1].title }}</h3><p class="muted">{{ views[1].text }}</p></div>
+              </header>
+              <div class="cards">
+                <div class="glass"><span class="avatar">AV</span><strong>Ava</strong><small>Design</small></div>
+                <div class="glass"><span class="avatar">LE</span><strong>Leo</strong><small>Frontend</small></div>
+                <div class="glass"><span class="avatar">MI</span><strong>Mia</strong><small>Product</small></div>
+              </div>
+            </article>
+          }
+          @case ('contact') {
+            <article class="view" [style.--accent]="views[2].accent" animate.enter="view-enter" animate.leave="view-leave">
+              <header>
+                <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="views[2].icon" /></svg></span>
+                <div><h3>{{ views[2].title }}</h3><p class="muted">{{ views[2].text }}</p></div>
+              </header>
+              <div class="form" aria-hidden="true">
+                <span>Your name</span>
+                <span>Email address</span>
+                <span>Send message</span>
+              </div>
+            </article>
+          }
+        }
+      </div>
+
+      <footer class="foot">
+        <span>© 2026 MyApp</span>
+        <span class="pill" title="Rendered once, never updated">Persistent · {{ shellLoadedAt }}</span>
+      </footer>
+    </div>
+
+    <div class="stats">
+      <div class="glass"><strong style="color: var(--green)">0</strong><span class="muted">Full page reloads</span></div>
+      <div class="glass"><strong class="grad">{{ swapCount() }}</strong><span class="muted">Views swapped</span></div>
+      <div class="glass"><strong class="grad">1</strong><span class="muted">HTML document</span></div>
+    </div>
+  </div>
+
+  <ol class="flow" aria-label="How Angular handles navigation">
+    @for (step of flowSteps; track step.title) {
+      <li class="glass">
+        <strong>{{ step.title }}</strong>
+        <p class="muted">{{ step.text }}</p>
+        <code>{{ step.code }}</code>
+      </li>
+    }
+  </ol>
+</section>
+
+<!-- D · Comparison -->
+<section id="compare" aria-labelledby="compare-title">
+  <header class="head">
+    <span class="kicker">03 · Compare</span>
+    <h2 id="compare-title">SPA vs Traditional Website</h2>
+    <p class="muted">Same click. Very different result.</p>
+  </header>
+
+  <div class="compare">
+    <article class="glass trad" style="--tone: #ff5c75">
+      <h3 class="badge">Traditional Website</h3>
+      <div class="browser" aria-hidden="true">
+        <div class="bar"><span class="url">site.com<span class="swap"><b>/home</b><b>/about</b></span></span></div>
+        <div class="page">
+          <div class="zone"><i></i><i></i><i></i></div>
+          <div class="zone main swap"><b></b><b></b></div>
+          <div class="zone"><i></i></div>
+          <span class="reload">Reloading…</span>
+        </div>
+      </div>
+      <ul class="points">
+        <li>Full document reload</li>
+        <li>Whole screen flashes</li>
+        <li>Everything is rebuilt</li>
+      </ul>
+    </article>
+
+    <article class="glass spa" style="--tone: var(--green)">
+      <h3 class="badge">Single Page Application</h3>
+      <div class="browser" aria-hidden="true">
+        <div class="bar"><span class="url">my-app.com<span class="swap"><b>/home</b><b>/about</b></span></span></div>
+        <div class="zone"><i></i><i></i><i></i></div>
+        <div class="zone main dyn swap"><b></b><b></b></div>
+        <div class="zone"><i></i></div>
+      </div>
+      <ul class="points">
+        <li>Only the content updates</li>
+        <li>Navbar and footer stay</li>
+        <li>Instant and smooth</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<p class="head muted">You explored this whole page without a single reload.</p>
