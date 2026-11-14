@@ -1,0 +1,134 @@
+<!-- 1 · Introduction -->
+<section class="split">
+  <div>
+    <span class="kicker rise">Core concept · Performance</span>
+    <h1 class="rise" style="--d: 1">Lazy <span class="grad">Loading</span></h1>
+    <p class="lead rise" style="--d: 2">Load only what you need, when you need it.</p>
+    <p class="muted rise" style="--d: 3">Lazy Loading delays downloading certain parts of an application until they are needed.</p>
+  </div>
+
+  <!-- A JS file travels from the server to the browser, on demand -->
+  <div class="art rise" style="--d: 2" aria-hidden="true">
+    <div class="box">Server<span class="file">Home.js</span><span class="file">About.js</span><span class="file">Dashboard.js</span></div>
+    <div class="track"><span class="packet">JS</span></div>
+    <div class="box">Browser<span class="file need">Only when needed</span></div>
+  </div>
+</section>
+
+<!-- 2 · Eager vs Lazy (looping 8s simulation) -->
+<section>
+  <header class="head">
+    <span class="kicker">01 · Compare</span>
+    <h2>Eager vs Lazy</h2>
+    <p class="muted">Same website. A different first download.</p>
+  </header>
+
+  <div class="compare">
+    <article class="card eager">
+      <h3>Eager Loading</h3>
+      <ol class="steps">
+        <li>The user opens the website.</li>
+        <li>All three bundles download immediately.</li>
+        <li>Unvisited pages are included.</li>
+      </ol>
+      <p class="user">👤 Opens the website ↓</p>
+      <ul class="bundles" aria-label="All bundles load at the start">
+        <li>Home.js<i></i></li>
+        <li>About.js<i></i></li>
+        <li>Dashboard.js<i></i></li>
+      </ul>
+      <p class="caption">Download everything upfront.</p>
+    </article>
+
+    <article class="card lazy">
+      <h3>Lazy Loading</h3>
+      <ol class="steps">
+        <li>The user opens the website.</li>
+        <li>Only the needed code downloads.</li>
+        <li>Other bundles stay unloaded.</li>
+        <li>Opening Dashboard downloads its bundle.</li>
+      </ol>
+      <p class="user">👤 Opens the website ↓ <span class="click">👆 Opens Dashboard</span></p>
+      <ul class="bundles" aria-label="Only Home loads at the start; Dashboard loads later">
+        <li>Home.js<i></i></li>
+        <li class="idle">About.js · not loaded<i></i></li>
+        <li class="idle late">Dashboard.js<i></i></li>
+      </ul>
+      <p class="caption">Download code when it is needed.</p>
+    </article>
+  </div>
+</section>
+
+<!-- 3 · Interactive simulation -->
+<section>
+  <header class="head">
+    <span class="kicker">02 · Try it</span>
+    <h2>Watch the bundles load</h2>
+    <p class="muted">Open each page. A bundle downloads only once.</p>
+  </header>
+
+  <div class="demo">
+    <div class="browser">
+      <div class="bar"><span class="url">my-app.com/<b>{{ active() }}</b></span></div>
+      <nav aria-label="Simulated app navigation">
+        @for (page of pages; track page.id) {
+          <button type="button" [class.on]="page.id === active()" [disabled]="loading() !== null" (click)="open(page.id)">
+            {{ page.label }}
+          </button>
+        }
+      </nav>
+      <div class="stage" aria-live="polite">
+        @if (loading(); as id) {
+          <p class="muted">Downloading <b>{{ id }}.js</b>…</p>
+          <i class="progress"></i>
+        } @else {
+          @for (page of [current()]; track page.id) {
+            <article class="view">
+              <h3>{{ page.title }}</h3>
+              <p class="muted">{{ page.text }}</p>
+              @if (page.id === 'dashboard') {
+                <div class="chart"><i style="height: 40%"></i><i style="height: 75%"></i><i style="height: 55%"></i><i style="height: 90%"></i></div>
+              }
+            </article>
+          }
+        }
+      </div>
+    </div>
+
+    <aside class="card">
+      <h3>Bundles</h3>
+      <ul class="files">
+        @for (page of pages; track page.id) {
+          <li [class.done]="isLoaded(page.id)" [class.busy]="loading() === page.id">
+            {{ page.label }}.js
+            <small>{{ loading() === page.id ? 'Downloading…' : isLoaded(page.id) ? '✓ Loaded' : 'Not loaded' }}</small>
+            @if (loading() === page.id) {
+              <i class="progress"></i>
+            }
+          </li>
+        }
+      </ul>
+      <p class="muted">Downloaded: {{ loaded().length }} / 3</p>
+      <button type="button" class="reset" (click)="reset()">Reset Demo</button>
+    </aside>
+  </div>
+</section>
+
+<!-- 4 · Angular implementation -->
+<section class="split">
+  <div>
+    <span class="kicker">03 · In Angular</span>
+    <h2>loadComponent()</h2>
+    <p class="muted">Angular can load a route's component code when the user navigates to it.</p>
+    <p class="tags">
+      <span class="tag">✓ Real Angular: this page was loaded this way</span>
+      <span class="tag sim">The browser above is a simulation</span>
+    </p>
+  </div>
+  <pre><code>{{ routeCode }}</code></pre>
+</section>
+
+<!-- 5 · Key takeaway -->
+<section>
+  <p class="card takeaway">Lazy Loading reduces unnecessary initial downloads and can improve startup performance.</p>
+</section>

@@ -1,6 +1,6 @@
 <header class="navbar">
   <nav class="inner" aria-label="Main navigation">
-    <a class="brand" href="#spa" aria-label="Angular Concepts, back to top">
+    <a class="brand" routerLink="/" aria-label="Angular Concepts, home">
       <span class="logo" aria-hidden="true">
         <svg viewBox="0 0 223 236">
           <defs>
@@ -18,13 +18,16 @@
     </a>
 
     <ul class="links">
-      <li>
-        <a class="link active" href="#spa" aria-current="page" aria-label="Single Page Application">
-          <span class="active-dot" aria-hidden="true"></span>
-          <span class="label-full">Single Page Application</span>
-          <span class="label-short" aria-hidden="true">SPA</span>
-        </a>
-      </li>
+      @for (link of links; track link.path) {
+        <li>
+          <a class="link" [routerLink]="link.path" routerLinkActive="active" ariaCurrentWhenActive="page"
+            [routerLinkActiveOptions]="{ exact: true }" [attr.aria-label]="link.full">
+            <span class="active-dot" aria-hidden="true"></span>
+            <span class="label-full">{{ link.full }}</span>
+            <span class="label-short" aria-hidden="true">{{ link.short }}</span>
+          </a>
+        </li>
+      }
     </ul>
   </nav>
 </header>

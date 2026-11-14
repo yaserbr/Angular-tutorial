@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 
 type ViewId = 'home' | 'about' | 'contact';
 
@@ -49,11 +49,10 @@ const VIEWS: readonly SimulatedView[] = [
   },
 ];
 
-/** Returns the current time as HH:MM:SS.mmm. */
-function timestamp(): string {
-  const now = new Date();
+/** Formats elapsed milliseconds as MM:SS.mmm (e.g. 01:05.042). */
+function formatElapsed(ms: number): string {
   const pad = (value: number, length = 2): string => String(value).padStart(length, '0');
-  return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}.${pad(now.getMilliseconds(), 3)}`;
+  return `${pad(Math.floor(ms / 60000))}:${pad(Math.floor(ms / 1000) % 60)}.${pad(ms % 1000, 3)}`;
 }
 
 @Component({
@@ -78,9 +77,22 @@ export class Singleton {
 
   protected readonly swapCount = signal(0);
 
-  /** The simulated shell (navbar + footer) is rendered once and never updated. */
-  protected readonly shellLoadedAt = timestamp();
-  protected readonly renderedAt = signal(timestamp());
+  /** Current time, refreshed by a single timer. Every counter is computed from it. */
+  private readonly now = signal(Date.now());
+
+  /** The shell (navbar + footer) starts once and is never reset. */
+  private readonly shellStart = Date.now();
+  /** The dynamic content restarts every time the view is replaced. */
+  private readonly viewStart = signal(Date.now());
+
+  protected readonly shellElapsed = computed(() => formatElapsed(this.now() - this.shellStart));
+  protected readonly viewElapsed = computed(() => formatElapsed(this.now() - this.viewStart()));
+
+  constructor() {
+    const timer = setInterval(() => this.now.set(Date.now()), 31);
+    // Stop the timer when the component is removed
+    inject(DestroyRef).onDestroy(() => clearInterval(timer));
+  }
 
   protected navigate(id: ViewId): void {
     if (id === this.activeId()) {
@@ -88,6 +100,7 @@ export class Singleton {
     }
     this.activeId.set(id);
     this.swapCount.update((count) => count + 1);
-    this.renderedAt.set(timestamp());
+    this.viewStart.set(Date.now());
+    this.now.set(Date.now());
   }
 }

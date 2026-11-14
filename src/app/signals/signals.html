@@ -1,0 +1,196 @@
+<!-- 1 · Introduction -->
+<section class="split">
+  <div>
+    <span class="kicker rise">Core concept · Reactivity</span>
+    <h1 class="rise" style="--d: 1">Change Detection &amp; <span class="grad">Signals</span></h1>
+    <p class="lead rise" style="--d: 2">Change the data. Angular updates the view.</p>
+    <p class="muted rise" style="--d: 3">Change Detection is how Angular checks and updates the UI when application data changes.</p>
+    <p class="muted rise" style="--d: 4">Signals help Angular track reactive values and know which parts of the application depend on them.</p>
+  </div>
+  <div class="intro-flow rise" style="--d: 2" aria-label="Data Change, then Angular, then Updated UI">
+    <span>Data Change</span><span>Angular</span><span>Updated UI</span>
+  </div>
+</section>
+
+<!-- 2 · Vanilla JS vs Signals -->
+<section>
+  <header class="head">
+    <span class="kicker">01 · Compare</span>
+    <h2>Vanilla JS vs Signals</h2>
+    <p class="muted">Same counter. Who updates the screen?</p>
+  </header>
+
+  <div class="two">
+    <article class="card" style="--tone: var(--red)">
+      <h3>Vanilla JavaScript <small class="tag">Simulation</small></h3>
+      <div class="counter">
+        @for (v of [vanillaCount()]; track v) {
+          <strong [class.hit]="isTouched('vanilla')">{{ v }}</strong>
+        }
+        <button type="button" (click)="incrementVanilla()">Increment</button>
+      </div>
+      @if (isTouched('vanilla')) {
+        @for (v of [vanillaCount()]; track v) {
+          <p class="log">count++ → <b>you</b> write textContent = {{ v }}</p>
+        }
+      }
+      <pre>{{ vanillaCode }}</pre>
+      <p class="muted">You manually update the DOM when the value changes.</p>
+    </article>
+
+    <article class="card" style="--tone: var(--cyan)">
+      <h3>Angular Signals <small class="tag">Real signal()</small></h3>
+      <div class="counter">
+        @for (v of [angularCount()]; track v) {
+          <strong [class.hit]="isTouched('angular')">{{ v }}</strong>
+        }
+        <button type="button" (click)="incrementAngular()">Increment</button>
+      </div>
+      @if (isTouched('angular')) {
+        @for (v of [angularCount()]; track v) {
+          <p class="log">count.update() → <b>Angular</b> updates the binding to {{ v }}</p>
+        }
+      }
+      <pre>{{ signalCode }}</pre>
+      <pre>{{ templateCode }}</pre>
+      <p class="muted">Angular tracks the Signal and updates the displayed value.</p>
+    </article>
+  </div>
+</section>
+
+<!-- 3 · How Signals work -->
+<section>
+  <header class="head">
+    <span class="kicker">02 · Dependencies</span>
+    <h2>How Signals work</h2>
+    <p class="muted">Change <code>count</code>. Watch who reacts.</p>
+  </header>
+
+  <div class="card">
+    <div class="graph">
+      <div class="node source">
+        <small>signal</small>
+        @for (v of [count()]; track v) {
+          <strong [class.hit]="isTouched('graph')">count = {{ v }}</strong>
+        }
+      </div>
+
+      <!-- Each wire carries a pulse when count changes -->
+      @for (row of ['Counter Display', 'Double Counter', 'Status Message']; track row; let i = $index) {
+        <div class="wire">
+          @if (isTouched('graph')) {
+            @for (v of [count()]; track v) {
+              <i class="dot"></i>
+            }
+          }
+        </div>
+        <div class="node">
+          <small>{{ row }}</small>
+          @switch (i) {
+            @case (0) {
+              @for (v of [count()]; track v) { <strong [class.hit]="isTouched('graph')">{{ v }}</strong> }
+            }
+            @case (1) {
+              @for (v of [doubleCount()]; track v) { <strong [class.hit]="isTouched('graph')">{{ v }}</strong> }
+            }
+            @case (2) {
+              @for (v of [status()]; track v) { <strong [class.hit]="isTouched('graph')">{{ v }}</strong> }
+            }
+          }
+        </div>
+      }
+      <div class="wire none"></div>
+      <div class="node static">
+        <small>Static Element — Not Dependent on Signal</small>
+        <strong>Hello!</strong>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" (click)="setCount(count() + 1)">Increment</button>
+      <button type="button" (click)="setCount(count() - 1)">Decrement</button>
+      <button type="button" class="ghost" (click)="setCount(0)">Reset</button>
+    </div>
+    <pre>{{ graphCode }}</pre>
+    <p class="muted">Status only flashes when its text really changes (e.g. Zero → Positive).</p>
+  </div>
+</section>
+
+<!-- 4 · Change Detection -->
+<section>
+  <header class="head">
+    <span class="kicker">03 · Change Detection</span>
+    <h2>Understanding Change Detection</h2>
+    <p class="muted">Angular tracks where Signals are read and uses that information to schedule and optimize view updates.</p>
+  </header>
+
+  <div class="card">
+    <div class="three">
+      <div class="node dep">
+        <small>Counter · reads count()</small>
+        @for (v of [cdCount()]; track v) { <strong [class.hit]="isTouched('cd')">{{ v }}</strong> }
+      </div>
+      <div class="node static"><small>User Name</small><strong>Sara</strong></div>
+      <div class="node static"><small>Theme</small><strong>Dark</strong></div>
+    </div>
+
+    @for (v of [cdCount()]; track v) {
+      <ol class="steps" [class.run]="isTouched('cd')">
+        <li>count changes</li>
+        <li>Angular schedules a view update</li>
+        <li>Counter shows {{ v }}</li>
+      </ol>
+    }
+
+    <div class="actions">
+      <button type="button" (click)="updateCounterSignal()">Update Counter Signal</button>
+    </div>
+    <p class="muted">
+      Conceptual visualization only, not Angular's exact rendering algorithm. Signals don't replace Change
+      Detection; they help Angular know which views depend on changed data and when they need updating.
+    </p>
+  </div>
+</section>
+
+<!-- 5 · Computed -->
+<section>
+  <header class="head">
+    <span class="kicker">04 · computed()</span>
+    <h2>Computed Signals</h2>
+    <p class="muted">Computed Signals automatically derive values from other Signals.</p>
+  </header>
+
+  <div class="card">
+    <div class="cart">
+      <div class="node"><small>Price</small><strong>${{ price() }}</strong></div>
+      <span>×</span>
+      <div class="node dep">
+        <small>Quantity</small>
+        @for (v of [quantity()]; track v) { <strong [class.hit]="isTouched('cart')">{{ v }}</strong> }
+      </div>
+      <div class="wire short">
+        @if (isTouched('cart')) {
+          @for (v of [quantity()]; track v) { <i class="dot"></i> }
+        }
+      </div>
+      <div class="node dep">
+        <small>Total · computed</small>
+        @for (v of [total()]; track v) { <strong [class.hit]="isTouched('cart')">${{ v }}</strong> }
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" class="ghost" (click)="changeQuantity(-1)">− Quantity</button>
+      <button type="button" (click)="changeQuantity(1)">+ Quantity</button>
+    </div>
+    <pre>{{ computedCode }}</pre>
+  </div>
+</section>
+
+<!-- 6 · Key takeaway -->
+<section>
+  <ul class="card takeaway">
+    <li>Signals store reactive values.</li>
+    <li>Computed Signals derive values automatically.</li>
+    <li>Change Detection keeps the UI in sync with application state.</li>
+  </ul>
+</section>

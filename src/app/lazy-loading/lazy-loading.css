@@ -1,0 +1,449 @@
+:host {
+  --purple: #8b5cf6;
+  --cyan: #22d3ee;
+  --red: #dd0031;
+  display: block;
+}
+
+section {
+  width: min(1100px, 100% - 32px);
+  margin: auto;
+  padding-block: clamp(48px, 8vw, 88px);
+}
+
+h1 {
+  margin: 16px 0 12px;
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  margin: 12px 0 8px;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+h3 {
+  margin: 0 0 12px;
+}
+
+.muted {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.lead {
+  margin: 0 0 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.grad {
+  background: var(--grad);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.kicker,
+.tag {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid;
+  border-radius: 99px;
+  font: 600 0.72rem var(--mono);
+  color: #ff9bd6;
+}
+
+/* Same entrance animation as the SPA page (singleton.css) */
+.rise {
+  animation: rise 0.9s calc(var(--d, 0) * 0.1s) cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.head {
+  max-width: 620px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.card {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.split,
+.compare,
+.demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 32px;
+}
+
+/* 1 · Illustration */
+.art {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.box {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  background: #0d1126;
+  font-weight: 700;
+  text-align: center;
+}
+
+.file {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.15);
+  font: 0.75rem var(--mono);
+  color: #c4b5fd;
+}
+
+.need {
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--cyan);
+}
+
+.track {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--cyan) 0 6px, transparent 0 12px);
+}
+
+.packet {
+  position: absolute;
+  top: -11px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--red);
+  font: 700 0.7rem var(--mono);
+  animation: travel 3s ease-in-out infinite;
+}
+
+/* 2 · Comparison */
+.eager {
+  --tone: var(--red);
+}
+
+.lazy {
+  --tone: var(--cyan);
+}
+
+.compare .card {
+  border-top: 3px solid var(--tone);
+}
+
+.steps {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.user {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+}
+
+.click {
+  color: var(--cyan);
+  animation: show 8s infinite;
+}
+
+.bundles,
+.files {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.bundles li,
+.files li {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  font: 600 0.85rem var(--mono);
+}
+
+/* Progress bars: grey track + purple-to-cyan fill */
+.bundles i,
+.progress {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.bundles i::after,
+.progress::after {
+  content: '';
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  animation: fill 8s infinite;
+}
+
+.bundles .idle {
+  border-style: dashed;
+  opacity: 0.45;
+}
+
+.idle i::after {
+  animation: none;
+  width: 0;
+}
+
+.late {
+  animation: wake 8s infinite;
+}
+
+.late i::after {
+  animation: fill-late 8s infinite;
+}
+
+.caption {
+  margin: 0;
+  font-weight: 700;
+  color: var(--tone);
+}
+
+/* 3 · Interactive demo */
+.demo {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.browser {
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  background: #0d1126;
+  box-shadow: 0 30px 80px -30px var(--purple);
+}
+
+.bar,
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Window dots */
+.bar::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  margin-right: 36px;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: 16px 0 #febc2e, 32px 0 #28c840;
+}
+
+.url {
+  flex: 1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  font: 0.8rem var(--mono);
+  color: var(--text-dim);
+}
+
+.url b,
+.stage b {
+  color: var(--cyan);
+}
+
+button {
+  padding: 8px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: none;
+  color: var(--text);
+  font: 600 0.9rem var(--font);
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+button:hover:not(:disabled),
+.on {
+  border-color: var(--purple);
+  background: rgba(139, 92, 246, 0.2);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.stage {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  min-height: 220px;
+  padding: 24px;
+}
+
+.stage .progress::after,
+.files .progress::after {
+  animation: load 1.2s linear both;
+}
+
+.view {
+  animation: enter 0.4s both;
+}
+
+.chart {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  height: 70px;
+  margin-top: 16px;
+}
+
+.chart i {
+  flex: 1;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(var(--cyan), var(--purple));
+}
+
+.files li {
+  grid-template-columns: 1fr auto;
+  border-style: dashed;
+  color: var(--text-dim);
+  transition: 0.3s;
+}
+
+.files .progress {
+  grid-column: 1 / -1;
+}
+
+.files .busy {
+  border: 1px solid var(--cyan);
+  color: var(--text);
+  box-shadow: 0 0 24px -8px var(--cyan);
+}
+
+.files .done {
+  border: 1px solid rgba(52, 211, 153, 0.5);
+  color: var(--text);
+}
+
+.done small {
+  color: var(--green);
+}
+
+.reset {
+  margin-top: 16px;
+  border-color: var(--red);
+}
+
+button.reset:hover {
+  background: rgba(221, 0, 49, 0.2);
+}
+
+/* 4 · Code */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 0;
+}
+
+.tag {
+  color: var(--cyan);
+}
+
+.sim {
+  color: #c4b5fd;
+}
+
+pre {
+  margin: 0;
+  padding: 20px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  border-radius: 14px;
+  background: #0a0e1f;
+  font: 0.9rem/1.6 var(--mono);
+  color: #c4b5fd;
+}
+
+/* 5 · Takeaway */
+.takeaway {
+  max-width: 720px;
+  margin: auto;
+  border-left: 4px solid var(--red);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (max-width: 860px) {
+  .split,
+  .compare,
+  .demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes travel {
+  0% { left: 0; opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { left: calc(100% - 32px); opacity: 0; }
+}
+
+/* Eager: everything downloads at the start */
+@keyframes fill {
+  0%, 5% { width: 0; }
+  30%, 100% { width: 100%; }
+}
+
+/* Lazy: Dashboard downloads only after the click (~55%) */
+@keyframes fill-late {
+  0%, 55% { width: 0; }
+  75%, 100% { width: 100%; }
+}
+
+@keyframes wake {
+  55% { opacity: 0.45; }
+  60%, 100% { opacity: 1; border-style: solid; border-color: var(--cyan); }
+}
+
+@keyframes show {
+  0%, 40%, 90%, 100% { opacity: 0; }
+  48%, 82% { opacity: 1; }
+}
+
+@keyframes load {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(12px); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+}

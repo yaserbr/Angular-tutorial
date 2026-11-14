@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { Navbar } from './navbar/navbar';
-import { Singleton } from './singleton/singleton';
 
 @Component({
   selector: 'app-root',
-  imports: [Navbar, Singleton],
+  imports: [Navbar, RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

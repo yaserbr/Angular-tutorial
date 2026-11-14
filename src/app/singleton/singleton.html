@@ -89,7 +89,7 @@
             {{ view.label }}
           </button>
         }
-        <span class="pill" title="Rendered once, never updated">Persistent · {{ shellLoadedAt }}</span>
+        <span class="pill" title="Keeps counting, never reset">Persistent · {{ shellElapsed() }}</span>
       </nav>
 
       <div class="stage">
@@ -97,8 +97,9 @@
           @if (count > 0) {
             <span class="flash" aria-hidden="true"></span>
           }
+          <!-- Re-created on every swap, so it visibly restarts from 00:00.000 -->
+          <span class="pill hot" title="Restarts on every navigation" animate.enter="url-enter">Dynamic · {{ viewElapsed() }}</span>
         }
-        <span class="pill hot" title="Updated on every navigation">Dynamic · {{ renderedAt() }}</span>
 
         @switch (activeId()) {
           @case ('home') {
@@ -145,7 +146,7 @@
 
       <footer class="foot">
         <span>© 2026 MyApp</span>
-        <span class="pill" title="Rendered once, never updated">Persistent · {{ shellLoadedAt }}</span>
+        <span class="pill" title="Keeps counting, never reset">Persistent · {{ shellElapsed() }}</span>
       </footer>
     </div>
 
