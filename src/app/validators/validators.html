@@ -14,7 +14,7 @@
   </div>
 </section>
 
-<!-- 2 + 3 · Form and live status -->
+<!-- 2 · The form + live status -->
 <section>
   <header class="head">
     <span class="kicker">01 · Try it</span>
@@ -22,24 +22,55 @@
     <p class="muted">Type in the fields. Angular validates as you go.</p>
   </header>
 
+  <!-- Short names for the three form fields -->
+  @let username = form.controls.username;
+  @let email = form.controls.email;
+  @let password = form.controls.password;
+
+  @if (showLeaveWarning()) {
+    <p class="warning" role="alert">
+      ⚠️ You cannot leave this page because the form contains data. Please clear the form first.
+    </p>
+  }
+
   <div class="layout">
     <form class="card" [formGroup]="form" (ngSubmit)="submit()">
-      @for (f of fields; track f.name) {
-        <label>
-          {{ f.label }}
-          <span class="input">
-            <input [type]="f.type" [formControlName]="f.name" (input)="onInput(f.name)" />
-            @if (state(f.name) === 'Valid') {
-              <b class="check" aria-label="Valid">✓</b>
-            }
-          </span>
-          @if (state(f.name) === 'Invalid') {
-            <small class="msg">{{ error(f.name) }}</small>
-          }
-        </label>
-      }
+      <label>
+        Username
+        <span class="input">
+          <input formControlName="username" />
+          @if (username.valid) { <b class="check">✓</b> }
+        </span>
+        @if (username.invalid && username.dirty) {
+          <small class="msg">Username needs at least 3 characters.</small>
+        }
+      </label>
+
+      <label>
+        Email
+        <span class="input">
+          <input formControlName="email" />
+          @if (email.valid) { <b class="check">✓</b> }
+        </span>
+        @if (email.invalid && email.dirty) {
+          <small class="msg">Please enter a valid email.</small>
+        }
+      </label>
+
+      <label>
+        Password
+        <span class="input">
+          <input type="password" formControlName="password" />
+          @if (password.valid) { <b class="check">✓</b> }
+        </span>
+        @if (password.invalid && password.dirty) {
+          <small class="msg">Password needs at least 8 characters.</small>
+        }
+      </label>
+
       <button type="submit" [disabled]="form.invalid">Submit</button>
-      @if (submitted()) {
+
+      @if (submitted) {
         <p class="success">🎉 Registered! All fields are valid.</p>
       }
     </form>
@@ -47,14 +78,9 @@
     <aside class="card">
       <h3>Live validation status</h3>
       <ul class="status">
-        @for (f of fields; track f.name) {
-          <li>
-            {{ f.label }}
-            @for (s of [state(f.name)]; track s) {
-              <span class="badge" [class]="'badge ' + s">{{ s }}</span>
-            }
-          </li>
-        }
+        <li>Username <b [class.ok]="username.valid" [class.bad]="username.invalid">{{ username.valid ? 'Valid' : 'Invalid' }}</b></li>
+        <li>Email <b [class.ok]="email.valid" [class.bad]="email.invalid">{{ email.valid ? 'Valid' : 'Invalid' }}</b></li>
+        <li>Password <b [class.ok]="password.valid" [class.bad]="password.invalid">{{ password.valid ? 'Valid' : 'Invalid' }}</b></li>
       </ul>
       <p class="overall" [class.ok]="form.valid" [class.bad]="form.invalid">
         Form Status: {{ form.valid ? 'VALID' : 'INVALID' }}
@@ -63,56 +89,56 @@
   </div>
 </section>
 
-<!-- 4 · How validators work -->
+<!-- 3 · Code (the same code this page uses) -->
 <section>
   <header class="head">
-    <span class="kicker">02 · How it works</span>
-    <h2>How Validators work</h2>
-    <p class="muted">Type in the form above and watch the flow.</p>
-  </header>
-
-  <div class="card">
-    @if (lastField(); as name) {
-      @for (n of [edits()]; track n) {
-        <div class="flow run">
-          <div class="node"><small>Input Value</small><strong>{{ field(name).label }}: "{{ shownValue(name) }}"</strong></div>
-          <div class="node"><small>Validator</small><strong>{{ field(name).rules }}</strong></div>
-          <div class="node" [class]="'node ' + state(name)"><small>Validation Result</small><strong>{{ form.controls[name].valid ? 'VALID' : 'INVALID' }}</strong></div>
-          <div class="node" [class]="'node ' + state(name)">
-            <small>UI Feedback</small>
-            <strong>{{ form.controls[name].valid ? 'Green border ✓' : 'Red border + message' }}</strong>
-          </div>
-        </div>
-      }
-    } @else {
-      <div class="flow">
-        <div class="node"><small>Input Value</small><strong>…</strong></div>
-        <div class="node"><small>Validator</small><strong>…</strong></div>
-        <div class="node"><small>Validation Result</small><strong>…</strong></div>
-        <div class="node"><small>UI Feedback</small><strong>…</strong></div>
-      </div>
-    }
-    <p class="muted note">Conceptual visualization, not Angular's exact internal implementation.</p>
-  </div>
-</section>
-
-<!-- 5 · Code -->
-<section>
-  <header class="head">
-    <span class="kicker">03 · Code</span>
-    <h2>Reactive Forms in code</h2>
+    <span class="kicker">02 · Code</span>
+    <h2>The code behind the form</h2>
   </header>
   <div class="split code">
-    <pre>{{ tsCode }}</pre>
-    <pre>{{ htmlCode }}</pre>
+<pre>form = new FormGroup(&#123;
+  username: new FormControl('', [Validators.required, Validators.minLength(3)]),
+  email: new FormControl('', [Validators.required, Validators.email]),
+  password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+&#125;);</pre>
+<pre>&lt;form [formGroup]="form" (ngSubmit)="submit()"&gt;
+  &lt;input formControlName="username" /&gt;
+  &lt;input formControlName="email" /&gt;
+  &lt;input formControlName="password" /&gt;
+
+  &lt;button [disabled]="form.invalid"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</pre>
   </div>
 </section>
 
-<!-- 6 · Key takeaway -->
+<!-- 4 · Key takeaway -->
 <section>
   <ul class="card takeaway">
     <li>Angular provides ready-to-use validators.</li>
     <li>Form validity updates automatically.</li>
     <li>Reactive Forms make validation easier to manage.</li>
   </ul>
+</section>
+
+<!-- 5 · Built-in validators reference table -->
+<section>
+  <header class="head">
+    <span class="kicker">03 · Reference</span>
+    <h2>Angular Built-in Validators</h2>
+  </header>
+  <div class="card table-wrap">
+    <table>
+      <thead>
+        <tr><th>Validator</th><th>Description</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>required</code></td><td>The field cannot be empty.</td><td>Username is required.</td></tr>
+        <tr><td><code>email</code></td><td>Checks if the email format is valid.</td><td>user&#64;gmail.com</td></tr>
+        <tr><td><code>minLength(n)</code></td><td>Requires at least n characters.</td><td>Password must have at least 8 characters.</td></tr>
+        <tr><td><code>maxLength(n)</code></td><td>Allows up to n characters.</td><td>Username can have up to 20 characters.</td></tr>
+        <tr><td><code>max(n)</code></td><td>The number cannot be greater than n.</td><td>Age must be 60 or younger.</td></tr>
+        <tr><td><code>min(n)</code></td><td>The number must be at least n.</td><td>Age must be 18 or older.</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>

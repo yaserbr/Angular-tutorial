@@ -11,7 +11,7 @@ export class Navbar {
   protected readonly links = [
     { path: '/', full: 'Single Page Application', short: 'SPA' },
     { path: '/lazy-loading', full: 'Lazy Loading', short: 'Lazy' },
-    { path: '/signals', full: 'Signals', short: 'Signals' },
     { path: '/validators', full: 'Validators', short: 'Forms' },
+    { path: '/guards', full: 'Guards', short: 'Guards' },
   ];
 }

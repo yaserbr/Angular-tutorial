@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { Signals } from './signals/signals';
+import { Guards } from './guards/guards';
 import { Singleton } from './singleton/singleton';
-import { Validators } from './validators/validators';
+import { ValidatorsPage } from './validators/validators';
+import { unsavedChangesGuard } from './validators/unsaved-changes.guard';
 
 export const routes: Routes = [
   { path: '', component: Singleton },
@@ -10,7 +11,7 @@ export const routes: Routes = [
     path: 'lazy-loading',
     loadComponent: () => import('./lazy-loading/lazy-loading').then((m) => m.LazyLoading),
   },
-  { path: 'signals', component: Signals },
-  { path: 'validators', component: Validators },
+  { path: 'validators', component: ValidatorsPage, canDeactivate: [unsavedChangesGuard] },
+  { path: 'guards', component: Guards },
   { path: '**', redirectTo: '' },
 ];

@@ -1,9 +1,5 @@
 import { Component, signal } from '@angular/core';
-// Angular's Validators is imported as NgValidators because this component class is also named "Validators"
-import { FormControl, FormGroup, ReactiveFormsModule, Validators as NgValidators } from '@angular/forms';
-
-type FieldName = 'username' | 'email' | 'password';
-type FieldState = 'Waiting' | 'Invalid' | 'Valid';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-validators',
@@ -11,90 +7,44 @@ type FieldState = 'Waiting' | 'Invalid' | 'Valid';
   templateUrl: './validators.html',
   styleUrl: './validators.css',
 })
-export class Validators {
-  /** Real Angular Reactive Form with built-in validators. */
-  protected readonly form = new FormGroup({
-    username: new FormControl('', [NgValidators.required, NgValidators.minLength(3)]),
-    email: new FormControl('', [NgValidators.required, NgValidators.email]),
-    password: new FormControl('', [NgValidators.required, NgValidators.minLength(8)]),
+
+
+
+
+
+export class ValidatorsPage {
+
+
+  form = new FormGroup({
+    username: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
   });
 
-  protected readonly fields: { name: FieldName; label: string; type: string; rules: string }[] = [
-    { name: 'username', label: 'Username', type: 'text', rules: 'required, minLength(3)' },
-    { name: 'email', label: 'Email', type: 'email', rules: 'required, email' },
-    { name: 'password', label: 'Password', type: 'password', rules: 'required, minLength(8)' },
-  ];
+  submitted = false;
 
-  protected readonly submitted = signal(false);
+  // Shown when unsavedChangesGuard blocks navigation
+  showLeaveWarning = signal(false);
 
-  /** For the flow diagram: which field was edited last, and a counter that replays the animation. */
-  protected readonly lastField = signal<FieldName | null>(null);
-  protected readonly edits = signal(0);
+  constructor() {
+    // Hide the warning as soon as the form is empty again
+    this.form.valueChanges.subscribe(() => {
+      if (!this.hasUnsavedData()) {
+        this.showLeaveWarning.set(false);
+      }
+    });
+  }
 
-  /** Waiting until the student touches or edits the field, then Valid / Invalid. */
-  protected state(name: FieldName): FieldState {
-    const control = this.form.controls[name];
-    if (!control.touched && !control.dirty) {
-      return 'Waiting';
+  submit() {
+    this.submitted = true;
+  }
+
+  // Used by unsavedChangesGuard: true when the user typed something and did not submit
+  hasUnsavedData() {
+    if (this.submitted) {
+      return false;
     }
-    return control.valid ? 'Valid' : 'Invalid';
+    const values = this.form.value;
+    return values.username !== '' || values.email !== '' || values.password !== '';
   }
-
-  /** A short message for the first error Angular reports on the field. */
-  protected error(name: FieldName): string {
-    const control = this.form.controls[name];
-    if (control.hasError('required')) {
-      return 'This field is required.';
-    }
-    if (control.hasError('minlength')) {
-      return `At least ${control.getError('minlength').requiredLength} characters.`;
-    }
-    return 'Enter a valid email address.';
-  }
-
-  protected field(name: FieldName) {
-    return this.fields.find((f) => f.name === name)!;
-  }
-
-  /** What the diagram shows as the input value (passwords are masked). */
-  protected shownValue(name: FieldName): string {
-    const value = this.form.controls[name].value ?? '';
-    return name === 'password' ? '•'.repeat(value.length) : value;
-  }
-
-  protected onInput(name: FieldName): void {
-    this.submitted.set(false);
-    this.lastField.set(name);
-    this.edits.update((n) => n + 1);
-  }
-
-  protected submit(): void {
-    this.submitted.set(true);
-  }
-
-  // Code examples (stored as strings so the template stays simple)
-  protected readonly tsCode = `form = new FormGroup({
-  username: new FormControl('', [
-    Validators.required,
-    Validators.minLength(3)
-  ]),
-  email: new FormControl('', [
-    Validators.required,
-    Validators.email
-  ]),
-  password: new FormControl('', [
-    Validators.required,
-    Validators.minLength(8)
-  ])
-});`;
-
-  protected readonly htmlCode = `<form [formGroup]="form">
-  <input formControlName="username">
-  <input formControlName="email">
-  <input formControlName="password">
-
-  <button [disabled]="form.invalid">
-    Submit
-  </button>
-</form>`;
 }

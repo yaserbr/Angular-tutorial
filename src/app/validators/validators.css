@@ -104,8 +104,7 @@ h3 {
   gap: 34px;
 }
 
-.intro-flow span,
-.node {
+.intro-flow span {
   position: relative;
   padding: 14px;
   border: 1px solid var(--border-strong);
@@ -127,8 +126,7 @@ h3 {
   animation-delay: 2s;
 }
 
-.intro-flow span + span::before,
-.node + .node::before {
+.intro-flow span + span::before {
   content: '→';
   position: absolute;
   left: -24px;
@@ -180,10 +178,10 @@ input.ng-valid:is(.ng-touched, .ng-dirty) {
   color: var(--green);
 }
 
+/* A short pop when a message or checkmark appears */
 .check,
 .msg,
-.success,
-.badge {
+.success {
   animation: pop 0.35s ease-out;
 }
 
@@ -212,7 +210,20 @@ button:disabled {
   font-weight: 600;
 }
 
-/* 3 · Status panel */
+/* Shown when the guard blocks navigation */
+.warning {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--bad);
+  border-left-width: 4px;
+  border-radius: 12px;
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecaca;
+  font-weight: 600;
+  animation: pop 0.35s ease-out;
+}
+
+/* Status panel */
 .status {
   display: grid;
   gap: 12px;
@@ -226,63 +237,12 @@ button:disabled {
   justify-content: space-between;
 }
 
-.badge {
-  padding: 2px 12px;
-  border-radius: 99px;
-  font: 600 0.78rem var(--mono);
-  color: var(--text-dim);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.Valid {
-  color: var(--green);
-  border-color: var(--green);
-  background: rgba(52, 211, 153, 0.12);
-}
-
-.Invalid {
-  color: var(--bad);
-  border-color: var(--bad);
-  background: rgba(248, 113, 113, 0.12);
-}
-
 .overall {
   margin: 0;
   font: 700 1rem var(--mono);
 }
 
-/* 4 · Flow diagram (re-created on each keystroke so it replays) */
-.flow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
-}
-
-.node small {
-  display: block;
-  font-weight: 500;
-  color: var(--text-dim);
-}
-
-.node strong {
-  overflow-wrap: anywhere;
-  font-size: 0.9rem;
-}
-
-.run .node {
-  animation: glow 0.8s ease-out both;
-}
-
-.run .node:nth-child(2) { animation-delay: 0.2s; }
-.run .node:nth-child(3) { animation-delay: 0.4s; }
-.run .node:nth-child(4) { animation-delay: 0.6s; }
-
-.note {
-  margin: 16px 0 0;
-  text-align: center;
-}
-
-/* 5 · Code */
+/* 3 · Code */
 .code {
   align-items: start;
 }
@@ -298,7 +258,7 @@ pre {
   color: #c4b5fd;
 }
 
-/* 6 · Takeaway */
+/* 4 · Takeaway */
 .takeaway {
   display: grid;
   gap: 10px;
@@ -308,19 +268,49 @@ pre {
   font-weight: 600;
 }
 
+/* 5 · Reference table (scrolls sideways on small screens) */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+th {
+  color: var(--cyan);
+}
+
+tbody tr {
+  transition: background 0.2s;
+}
+
+tbody tr:hover {
+  background: rgba(139, 92, 246, 0.12);
+}
+
+code {
+  font: 0.85rem var(--mono);
+  color: #c4b5fd;
+}
+
 @media (max-width: 760px) {
   .split,
-  .layout,
-  .flow {
+  .layout {
     grid-template-columns: 1fr;
   }
 
   .intro-flow {
     flex-wrap: wrap;
-  }
-
-  .node + .node::before {
-    display: none;
   }
 }
 

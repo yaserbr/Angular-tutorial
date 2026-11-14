@@ -1,0 +1,167 @@
+<!-- 1 · Introduction -->
+<section class="split">
+  <div>
+    <span class="kicker rise">Core concept · Routing</span>
+    <h1 class="rise" style="--d: 1">Angular Route <span class="grad">Guards</span></h1>
+    <p class="lead rise" style="--d: 2">Control navigation before a route opens.</p>
+    <p class="muted rise" style="--d: 3">Route Guards help Angular decide whether a user can enter or leave a route.</p>
+    <p class="note rise" style="--d: 4">
+      ⚠️ Route Guards control navigation in the browser. Real security permissions must also be checked by the backend.
+    </p>
+  </div>
+
+  <!-- A request travels to the guard, then the green and red paths light up in turn -->
+  <div class="decision rise" style="--d: 2" aria-label="User, then Route Guard, then Access Allowed or Access Denied">
+    <span class="chip">👤 User</span>
+    <span class="wire"><i class="dot"></i></span>
+    <span class="chip guard">🛡️ Route Guard</span>
+    <div class="paths">
+      <span class="path allow"><i></i><b class="chip ok">✓ Access Allowed</b></span>
+      <span class="path deny"><i></i><b class="chip bad">✕ Access Denied</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · Interactive demo -->
+<section>
+  <header class="head">
+    <span class="kicker">01 · Try it · Simulation</span>
+    <h2>Protect the Dashboard</h2>
+    <p class="muted">Admin can access the Dashboard. User cannot.</p>
+  </header>
+
+  <div class="card demo">
+    <div class="row">
+      <button type="button" class="ghost" [class.on]="role() === 'admin'" (click)="selectRole('admin')">👑 Admin</button>
+      <button type="button" class="ghost" [class.on]="role() === 'user'" (click)="selectRole('user')">👤 User</button>
+      <button type="button" (click)="openDashboard()">Open Dashboard</button>
+    </div>
+
+    <!-- Re-created on every click so the request animation replays -->
+    @for (n of [attempts()]; track n) {
+      @if (result() !== '') {
+        <div class="flow run">
+          <span class="chip">Request: /dashboard</span><i>→</i>
+          <span class="chip guard">authGuard</span><i>→</i>
+          @if (result() === 'granted') {
+            <span class="chip ok">Dashboard</span>
+          } @else {
+            <span class="chip bad">Blocked</span>
+          }
+        </div>
+
+        @if (result() === 'granted') {
+          <p class="alert granted">✅ Access Granted</p>
+          <div class="dashboard">
+            <strong>📊 Dashboard</strong>
+            <p class="muted">Protected content: only visible to Admin.</p>
+          </div>
+        } @else {
+          <p class="alert denied">⛔ Access Denied: only Admin can open the Dashboard.</p>
+        }
+      }
+    }
+  </div>
+</section>
+
+<!-- 3 · Types of guards -->
+<section>
+  <header class="head">
+    <span class="kicker">02 · Types</span>
+    <h2>Types of Route Guards</h2>
+  </header>
+
+  <div class="types">
+    <article class="card">
+      <h3>CanActivate</h3>
+      <p class="q">"Can the user enter this route?"</p>
+      <p class="muted">Example: a user must be logged in to open the Dashboard.</p>
+      <div class="flow"><span class="chip">User</span><i>→</i><span class="chip guard">CanActivate</span><i>→</i><span class="chip">Dashboard</span></div>
+      <div class="flow"><span class="chip ok">Logged in → Allowed</span><span class="chip bad">Logged out → Blocked</span></div>
+    </article>
+
+    <article class="card">
+      <h3>CanActivateChild</h3>
+      <p class="q">"Can the user enter a child route?"</p>
+      <p class="muted">Example: only admins can open pages inside an Admin section.</p>
+      <div class="flow"><span class="chip">Admin</span><i>→</i><span class="chip guard">CanActivateChild</span><i>→</i><span class="chip">Child Route</span></div>
+      <div class="parent">
+        <small>/admin (parent route)</small>
+        <div class="flow"><span class="chip">/admin/users</span><span class="chip">/admin/settings</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <h3>CanDeactivate</h3>
+      <p class="q">"Can the user leave this route?"</p>
+      <p class="muted">Example: warn the user before leaving a form with unsaved changes.</p>
+      <div class="flow"><span class="chip">Edit Form</span><i>→</i><span class="chip guard">CanDeactivate</span><i>→</i><span class="chip">Another Page</span></div>
+
+      <!-- Small simulation -->
+      <div class="row">
+        <input #note placeholder="Type something…" [value]="draft()" (input)="draft.set(note.value); leaveStep.set('')" />
+        <button type="button" (click)="leavePage()">Leave Page</button>
+      </div>
+      @if (leaveStep() === 'confirm') {
+        <div class="alert ask row">
+          You have unsaved changes. Leave anyway?
+          <button type="button" (click)="confirmLeave()">Leave</button>
+          <button type="button" class="ghost" (click)="stay()">Stay</button>
+        </div>
+      }
+      @if (leaveStep() === 'left') {
+        <p class="alert granted">✅ No unsaved changes, navigation allowed.</p>
+      }
+      @if (leaveStep() === 'stayed') {
+        <p class="alert denied">✋ Navigation cancelled. You stayed on the form.</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>CanMatch</h3>
+      <p class="q">"Can this route configuration be matched?"</p>
+      <p class="muted">Example: match an admin route only when the user has the required role.</p>
+      <div class="flow"><span class="chip">Requested URL</span><i>→</i><span class="chip guard">CanMatch</span><i>→</i><span class="chip ok">Route Match</span><span class="chip">↪ Try Other Routes</span></div>
+      <p class="muted">If CanMatch returns false, Angular can try another matching route.</p>
+    </article>
+  </div>
+
+  <div class="card table-wrap" style="margin-top: 28px">
+    <table>
+      <thead><tr><th>Guard</th><th>Purpose</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>CanActivate</code></td><td>Controls entering a route.</td><td>Protected Dashboard</td></tr>
+        <tr><td><code>CanActivateChild</code></td><td>Controls entering child routes.</td><td>Admin Pages</td></tr>
+        <tr><td><code>CanDeactivate</code></td><td>Controls leaving a route.</td><td>Unsaved Form</td></tr>
+        <tr><td><code>CanMatch</code></td><td>Controls route matching.</td><td>Role-based Routes</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 4 · Code -->
+<section class="split">
+  <div>
+    <span class="kicker">03 · Code</span>
+    <h2>How Guards work</h2>
+    <p class="muted">Angular runs the Guard before completing the route navigation.</p>
+    <ul>
+      <li><code>true</code> → Allow navigation.</li>
+      <li><code>false</code> → Block navigation.</li>
+      <li><code>UrlTree</code> or <code>RedirectCommand</code> → Redirect navigation.</li>
+    </ul>
+  </div>
+  <pre>{{ guardCode }}</pre>
+</section>
+
+<!-- 5 · Key takeaway -->
+<section>
+  <div class="card takeaway">
+    <h3>Route Guards control navigation, not backend security.</h3>
+    <ul>
+      <li>Guards can allow or block navigation.</li>
+      <li>Different Guards handle different navigation situations.</li>
+      <li>Always enforce real permissions on the server.</li>
+    </ul>
+  </div>
+</section>
